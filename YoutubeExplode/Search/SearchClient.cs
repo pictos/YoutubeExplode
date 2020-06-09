@@ -7,64 +7,72 @@ using YoutubeExplode.Videos;
 
 namespace YoutubeExplode.Search
 {
-    /// <summary>
-    /// YouTube search queries.
-    /// </summary>
-    public class SearchClient
-    {
-        private readonly YoutubeHttpClient _httpClient;
+	/// <summary>
+	/// YouTube search queries.
+	/// </summary>
+	public class SearchClient
+	{
+		private readonly YoutubeHttpClient _httpClient;
 
-        /// <summary>
-        /// Initializes an instance of <see cref="SearchClient"/>.
-        /// </summary>
-        internal SearchClient(YoutubeHttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+		private HashSet<string> _encounteredVideoIds = new HashSet<string>();
 
-        /// <summary>
-        /// Enumerates videos returned by the specified search query.
-        /// </summary>
-        public async IAsyncEnumerable<Video> GetVideosAsync(string searchQuery)
-        {
-            var encounteredVideoIds = new HashSet<string>();
+		private string lastSearchQuery = string.Empty;
 
-            for (var page = 0; page < int.MaxValue; page++)
-            {
-                var response = await PlaylistResponse.GetSearchResultsAsync(_httpClient, searchQuery, page);
+		/// <summary>
+		/// Initializes an instance of <see cref="SearchClient"/>.
+		/// </summary>
+		internal SearchClient(YoutubeHttpClient httpClient)
+		{
+			_httpClient = httpClient;
+		}
 
-                var countDelta = 0;
-                foreach (var video in response.GetVideos())
-                {
-                    var videoId = video.GetId();
+		/// <summary>
+		/// Enumerates videos returned by the specified search query.
+		/// </summary>
+		public async IAsyncEnumerable<Video> GetVideosAsync(string searchQuery, int startPage, int endPage)
+		{
+			if (!searchQuery.Equals(lastSearchQuery,StringComparison.InvariantCultureIgnoreCase))
+			{
+				lastSearchQuery = searchQuery.ToLower();
+				_encounteredVideoIds = new HashSet<string>();
+			}
 
-                    // Skip already encountered videos
-                    if (!encounteredVideoIds.Add(videoId))
-                        continue;
+			for (; startPage <= endPage; startPage++)
+			{
+				var response = await PlaylistResponse.GetSearchResultsAsync(_httpClient, searchQuery, startPage);
 
-                    yield return new Video(
-                        videoId,
-                        video.GetTitle(),
-                        video.GetAuthor(),
-                        video.GetUploadDate(),
-                        video.GetDescription(),
-                        video.GetDuration(),
-                        new ThumbnailSet(videoId),
-                        video.GetKeywords(),
-                        new Engagement(
-                            video.GetViewCount(),
-                            video.GetLikeCount(),
-                            video.GetDislikeCount()
-                        )
-                    );
+				var countDelta = 0;
+				foreach (var video in response.GetVideos())
+				{
+					var videoId = video.GetId();
 
-                    countDelta++;
-                }
+					// Skip already encountered videos
+					if (!_encounteredVideoIds.Add(videoId))
+						continue;
 
-                // Videos loop around, so break when we stop seeing new videos
-                if (countDelta <= 0)
-                    break;
-            }
-        }
-    }
+					yield return new Video(
+						videoId,
+						video.GetTitle(),
+						video.GetAuthor(),
+						video.GetUploadDate(),
+						video.GetDescription(),
+						video.GetDuration(),
+						new ThumbnailSet(videoId),
+						video.GetKeywords(),
+						new Engagement(
+							video.GetViewCount(),
+							video.GetLikeCount(),
+							video.GetDislikeCount()
+						)
+					);
+
+					countDelta++;
+				}
+
+				// Videos loop around, so break when we stop seeing new videos
+				if (countDelta <= 0)
+					break;
+			}
+		}
+	}
 }
