@@ -12,17 +12,16 @@ namespace YoutubeExplode.Channels
         /// <summary>
         /// ID as a string.
         /// </summary>
-        public string Value { get; }
+        public string? Value { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="ChannelId"/>.
         /// </summary>
         public ChannelId(string idOrUrl) =>
-            Value = TryNormalize(idOrUrl) ??
-                    throw new ArgumentException($"Invalid YouTube channel ID or URL: '{idOrUrl}'.");
+            Value = TryNormalize(idOrUrl);
 
         /// <inheritdoc />
-        public override string ToString() => Value;
+        public override string ToString() => Value ?? "No Channel detected";
     }
 
     public partial struct ChannelId : IEquatable<ChannelId>

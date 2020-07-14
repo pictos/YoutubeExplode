@@ -8,6 +8,7 @@ namespace YoutubeExplode.Videos
     /// <summary>
     /// YouTube video metadata.
     /// </summary>
+
     public class Video
     {
         /// <summary>
@@ -63,7 +64,7 @@ namespace YoutubeExplode.Videos
         /// <summary>
         /// Engagement statistics for this video.
         /// </summary>
-        public Engagement Engagement { get; }
+        public Engagement? Engagement { get; }
 
         /// <summary>
         /// Initializes an instance of <see cref="Video"/>.
@@ -78,7 +79,7 @@ namespace YoutubeExplode.Videos
             TimeSpan duration,
             ThumbnailSet thumbnails,
             IReadOnlyList<string> keywords,
-            Engagement engagement)
+            Engagement? engagement)
         {
             Id = id;
             Title = title;
@@ -91,7 +92,6 @@ namespace YoutubeExplode.Videos
             Keywords = keywords;
             Engagement = engagement;
         }
-
 
         /// <inheritdoc />
         public override string ToString() => $"Video ({Title})";

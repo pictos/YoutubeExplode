@@ -3,10 +3,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0;net461;netcoreapp3.0</TargetFrameworks>
-    <Authors>$(Company)</Authors>
+    <Authors>Tyrrrz, PedroJesus</Authors>
     <Description>The ultimate dirty YouTube library. Parses public metadata on YouTube videos, lets you download them and much more. Does not require an API key and does not impose usage quotas.</Description>
     <PackageTags>youtube video download playlist user channel closed caption tracks subtitles parse extract metadata info net core standard</PackageTags>
-    <PackageProjectUrl>https://github.com/Tyrrrz/YoutubeExplode</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/pictos/YoutubeExplode</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/Tyrrrz/YoutubeExplode/blob/master/Changelog.md</PackageReleaseNotes>
     <PackageIcon>favicon.png</PackageIcon>
     <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
@@ -16,6 +16,8 @@
     <EmbedUntrackedSources>True</EmbedUntrackedSources>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Version>5.1.4</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   
   <!-- Disable nullability warnings on older frameworks because there is no nullability info for BCL -->

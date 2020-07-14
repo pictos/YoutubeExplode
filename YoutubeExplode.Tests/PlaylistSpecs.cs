@@ -118,5 +118,27 @@ namespace YoutubeExplode.Tests
             videos.Should().NotBeEmpty();
             videos.Should().HaveCountLessOrEqualTo(maxVideoCount);
         }
+
+        [Fact]
+        public async Task Get_Playlist_By_Query()
+        {
+            var youtube = new YoutubeClient();
+
+            var playlist = await youtube.Search.GetPlaylistAsync("Cícero", 0, 1);
+
+            playlist.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task Get_Video_By_Playlist()
+        {
+            var youtube = new YoutubeClient();
+
+            var playlist = await youtube.Search.GetPlaylistAsync("Cícero", 0, 1);
+
+            var videos = await youtube.Search.GetPlaylistVideosAsync(playlist.First().Url);
+
+            videos.Should().NotBeEmpty();
+        }
     }
 }
