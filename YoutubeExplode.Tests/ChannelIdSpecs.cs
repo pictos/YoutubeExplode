@@ -42,9 +42,10 @@ namespace YoutubeExplode.Tests
         [InlineData("UC3xnGqlcL y-GXz5N3wiTJQ")]
         public void I_cannot_specify_an_invalid_channel_id(string channelId)
         {
+            var _channelId = new ChannelId(channelId);
             // Act & assert
-            Assert.Throws<ArgumentException>(() => new ChannelId(channelId));
             ChannelId.TryParse(channelId).Should().BeNull();
+            _channelId.ToString().Should().Equals("No Channel detected");
         }
 
         [Theory]
@@ -53,9 +54,12 @@ namespace YoutubeExplode.Tests
         [InlineData("youtube.com/")]
         public void I_cannot_specify_an_invalid_channel_url_in_place_of_an_id(string channelUrl)
         {
+            var channelId = new ChannelId(channelUrl);
             // Act & assert
-            Assert.Throws<ArgumentException>(() => new ChannelId(channelUrl));
+            //Assert.Throws<ArgumentException>(() => new ChannelId(channelUrl));
             ChannelId.TryParse(channelUrl).Should().BeNull();
+            channelId.ToString().Should().Equals("No Channel detected");
+            
         }
     }
 }

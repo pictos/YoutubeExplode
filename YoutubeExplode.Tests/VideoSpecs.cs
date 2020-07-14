@@ -33,7 +33,7 @@ namespace YoutubeExplode.Tests
             video.Thumbnails.StandardResUrl.Should().NotBeNullOrWhiteSpace();
             video.Thumbnails.MaxResUrl.Should().NotBeNullOrWhiteSpace();
             video.Keywords.Should().BeEquivalentTo("osu", "mouse", "rhythm game");
-            video.Engagement.ViewCount.Should().BeGreaterOrEqualTo(134);
+            video.Engagement!.ViewCount.Should().BeGreaterOrEqualTo(134);
             video.Engagement.LikeCount.Should().BeGreaterOrEqualTo(5);
             video.Engagement.DislikeCount.Should().BeGreaterOrEqualTo(0);
         }
