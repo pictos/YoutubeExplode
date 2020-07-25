@@ -45,10 +45,13 @@ namespace YoutubeExplode.Search
             {
                 var response = await PlaylistResponse.GetSearchResultsAsync(_httpClient, searchQuery, startPage);
 
-                var countDelta = 0;
                 foreach (var video in response.GetVideos())
                 {
                     var videoId = video.GetId();
+
+                    if (!_encounteredVideoIds.Add(videoId))
+                        continue;
+
                     yield return new Video(
                         videoId,
                         video.GetTitle(),
@@ -65,17 +68,7 @@ namespace YoutubeExplode.Search
                             video.GetDislikeCount()
                         )
                     );
-
-                    // Skip already encountered videos
-                    if (!_encounteredVideoIds.Add(videoId))
-                        continue;
-
-                    countDelta++;
                 }
-
-                // Videos loop around, so break when we stop seeing new videos
-                if (countDelta <= 0)
-                    break;
             }
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
@@ -66,6 +67,18 @@ namespace YoutubeExplode.Tests
 
             // Act & assert
             await Assert.ThrowsAsync<VideoUnavailableException>(() => youtube.Videos.GetAsync(videoId));
+        }
+        
+        [Fact]
+        public async Task Video_Dont_Repeat()
+        {
+            var youtube = new YoutubeClient();
+
+            var videos = await youtube.Search.GetVideosAsync("Cícero", 0, 2);
+
+            var videosDistinct = videos.Distinct().ToList();
+
+            videos.Count.Should().Equals(videosDistinct.Count);
         }
     }
 }
