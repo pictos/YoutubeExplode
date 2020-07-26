@@ -80,5 +80,17 @@ namespace YoutubeExplode.Tests
 
             videos.Count.Should().Equals(videosDistinct.Count);
         }
+
+        [Fact]
+        public async Task Video_Dont_Repeat_For_Html_Search()
+        {
+            var youtube = new YoutubeClient();
+
+            var videos = await youtube.Search.GetVideosByHTMLAsync("Cícero", 0, 2);
+
+            var videosDistinct = videos.Distinct().ToList();
+
+            videos.Count.Should().Equals(videosDistinct.Count);
+        }
     }
 }
