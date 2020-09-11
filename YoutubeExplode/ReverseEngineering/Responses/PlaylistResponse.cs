@@ -155,8 +155,6 @@ namespace YoutubeExplode.ReverseEngineering.Responses
 
 			for (int ctr = 0; ctr <= result.Count - 1; ctr++)
 			{
-
-
 				// Id
 				var id = result[ctr].Groups[1].Value;
 
