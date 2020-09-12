@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -132,16 +132,26 @@ namespace YoutubeExplode.ReverseEngineering.Responses
 				return Parse(raw);
 			});
 
-		public static Task<PlaylistResponse> GetSearchResultsAsync(YoutubeHttpClient httpClient, string query, int page = 0) =>
-			Retry.WrapAsync(async () =>
-			{
-				var queryEncoded = Uri.EscapeUriString(query);
+		public static async Task<PlaylistResponse> GetSearchResultsAsync(YoutubeHttpClient httpClient, string query, int page = 0) =>
+            await Retry.WrapAsync(async () =>
+            {
+                var queryEncoded = Uri.EscapeUriString(query);
 
-				var url = $"https://youtube.com/search_ajax?style=json&search_query={queryEncoded}&page={page}&hl=br";
-				var raw = await httpClient.GetStringAsync(url, false).ConfigureAwait(false); // don't ensure success but rather return empty list
+                var url = $"https://youtube.com/search_ajax?style=json&search_query={queryEncoded}&page={page}&hl=en";
 
-				return Parse(raw);
-			});
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+                // These headers are required for some reason
+                request.Headers.Add("x-youtube-client-name", "56");
+                request.Headers.Add("x-youtube-client-version", "20200911");
+
+                // Don't ensure success here but rather return an empty list
+                using var response = await httpClient.SendAsync(request);
+                var raw = await response.Content.ReadAsStringAsync();
+
+                return Parse(raw);
+            });
+            
 
 		public static async Task<IEnumerable<PlaylistSearchModel>> GetPlaylistSearchResultsAsync(YoutubeHttpClient httpClient, string querystring, int page = 0)
 		{
