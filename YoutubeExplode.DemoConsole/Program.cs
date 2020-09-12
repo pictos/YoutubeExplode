@@ -21,32 +21,39 @@ namespace YoutubeExplode.DemoConsole
             // For a more complicated example - check out the WPF demo
 
             var youtube = new YoutubeClient();
-            //var p = (await GetPlaylist(youtube)).ToList();
-            await GetVideosAsync(youtube);
-            //IEnumerable<Video>? videos = await youtube.Search.GetPlaylistVideosAsync(p[0].Url).ConfigureAwait(false);
-            //// Read the video ID1
-            //Console.Write("Enter YouTube video ID or URL: ");
-            //var videoId = new VideoId(Console.ReadLine());
+			await GetVideosAsync(youtube);
+			var playlist = (await youtube.Search.GetPlaylistAsync("cicero cosmo", 0, 1)).ToList();
 
-            //// Get media streams & choose the best muxed stream
-            //var streams = await youtube.Videos.Streams.GetManifestAsync(videoId);
-            //var streamInfo = streams.GetMuxed().WithHighestVideoQuality();
-            //if (streamInfo == null)
-            //{
-            //    Console.Error.WriteLine("This videos has no streams");
-            //    return -1;
-            //}
+			var videos = (await youtube.Search.GetPlaylistVideosAsync(playlist[0].Url)).ToList();
 
-            //// Compose file name, based on metadata
-            //var fileName = $"{videoId}.{streamInfo.Container.Name}";
+			var z = videos[0];
 
-            //// Download video
-            //Console.Write($"Downloading stream: {streamInfo.VideoQualityLabel} / {streamInfo.Container.Name}... ");
-            //using (var progress = new InlineProgress())
-            //    await youtube.Videos.Streams.DownloadAsync(streamInfo, fileName, progress);
+			//var p = (await GetPlaylist(youtube)).ToList();
+			//await GetVideosAsync(youtube);
+			//IEnumerable<Video>? videos = await youtube.Search.GetPlaylistVideosAsync(p[0].Url).ConfigureAwait(false);
+			//// Read the video ID1
+			//Console.Write("Enter YouTube video ID or URL: ");
+			//var videoId = new VideoId(Console.ReadLine());
 
-            //Console.WriteLine($"Video saved to '{fileName}'");
-            return 0;
+			//// Get media streams & choose the best muxed stream
+			//var streams = await youtube.Videos.Streams.GetManifestAsync(videoId);
+			//var streamInfo = streams.GetMuxed().WithHighestVideoQuality();
+			//if (streamInfo == null)
+			//{
+			//    Console.Error.WriteLine("This videos has no streams");
+			//    return -1;
+			//}
+
+			//// Compose file name, based on metadata
+			//var fileName = $"{videoId}.{streamInfo.Container.Name}";
+
+			//// Download video
+			//Console.Write($"Downloading stream: {streamInfo.VideoQualityLabel} / {streamInfo.Container.Name}... ");
+			//using (var progress = new InlineProgress())
+			//    await youtube.Videos.Streams.DownloadAsync(streamInfo, fileName, progress);
+
+			//Console.WriteLine($"Video saved to '{fileName}'");
+			return 0;
         }
 
         private static async Task<IEnumerable<Video>> GetPlaylist(YoutubeClient youtube)
@@ -63,11 +70,13 @@ namespace YoutubeExplode.DemoConsole
 
         static async Task GetVideosAsync(YoutubeClient youtube)
 		{
-            var p = await youtube.Search.GetVideosAsync("Cicero cosmo", 0, 1);
+            var p = (await youtube.Search.GetVideosAsync("Cicero cosmo", 0, 1)).ToList();
             foreach (var item in p)
             {
                 Console.WriteLine($"Titulo:{item.Title}, Url:{item.Url}");
             }
+
+            var z = await youtube.Videos.Streams.GetManifestAsync(p[0].Id);
         }
     }
 }
